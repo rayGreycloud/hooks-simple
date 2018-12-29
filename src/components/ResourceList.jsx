@@ -4,22 +4,27 @@ import axios from 'axios';
 const ResourceList = ({ resource }) => {
   const [resources, setResources] = useState([]);
 
-  const getResources = async resource => {
-    const response = await axios.get(
-      `https://jsonplaceholder.typicode.com/${resource}`,
-    );
-
-    setResources(response.data);
-  };
-
+  // Refactor using IIFE
   useEffect(
     () => {
-      getResources(resource);
+      (async resource => {
+        const response = await axios.get(
+          `https://jsonplaceholder.typicode.com/${resource}`,
+        );
+
+        setResources(response.data);
+      })(resource);
     },
     [resource],
   );
 
-  return <div>{resources.length}</div>;
+  return (
+    <ul>
+      {resources.map(item => (
+        <li key={item.id}>{item.title}</li>
+      ))}
+    </ul>
+  );
 };
 
 export default ResourceList;
